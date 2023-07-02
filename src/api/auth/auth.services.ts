@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import db from "../../utils/db";
 import hashToken from "../../utils/hashToken";
 
@@ -8,29 +10,57 @@ const addRefreshTokenWhiteList = ({
 }: {
   jti: string;
   refreshToken: string;
-  userId: any;
+  userId: string;
 }) => {
+  const schema = z.object({
+    jti: z.string(),
+    refreshToken: z.string(),
+    userId: z.string(),
+  });
+
+  const parsed = schema.parse({
+    jti,
+    refreshToken,
+    userId,
+  });
+
   return db.refreshToken.create({
     data: {
-      id: jti,
-      hashedToken: hashToken(refreshToken),
-      userId,
+      id: parsed.jti,
+      hashedToken: hashToken(parsed.refreshToken),
+      userId: parsed.userId,
     },
   });
 };
 
 const findRefreshTokenById = (id: string) => {
+  const schema = z.object({
+    id: z.string(),
+  });
+
+  const parsed = schema.parse({
+    id,
+  });
+
   return db.refreshToken.findUnique({
     where: {
-      id,
+      id: parsed.id,
     },
   });
 };
 
 const deleteRefreshToken = (id: string) => {
+  const schema = z.object({
+    id: z.string(),
+  });
+
+  const parsed = schema.parse({
+    id,
+  });
+
   return db.refreshToken.update({
     where: {
-      id,
+      id: parsed.id,
     },
     data: {
       revoked: true,
@@ -38,10 +68,18 @@ const deleteRefreshToken = (id: string) => {
   });
 };
 
-const revokeTokens = (userIdL: string) => {
+const revokeTokens = (userId: string) => {
+  const schema = z.object({
+    userId: z.string(),
+  });
+
+  const parsed = schema.parse({
+    userId,
+  });
+
   return db.refreshToken.updateMany({
     where: {
-      userId: userIdL,
+      userId: parsed.userId,
     },
     data: {
       revoked: true,

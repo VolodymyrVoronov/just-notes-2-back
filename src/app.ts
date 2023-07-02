@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-import { notFound, errorHandler, isAuthenticated } from "./middlewares";
+import { notFound, errorHandler } from "./middlewares";
 import api from "./api";
 
 const app = express();
@@ -22,6 +22,5 @@ app.use("/api", api);
 
 app.use(notFound);
 app.use(errorHandler);
-// app.use(isAuthenticated);
 
 export default app;
