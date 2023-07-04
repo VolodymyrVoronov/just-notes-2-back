@@ -37,7 +37,7 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     const token = authorization.split(" ")[1];
     const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET as Secret);
 
-    req.user = payload;
+    req.payload = payload;
   } catch (error) {
     res.status(401);
 
