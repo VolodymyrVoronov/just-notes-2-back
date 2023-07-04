@@ -57,6 +57,7 @@ router.post(
 
       res.json({
         accessToken,
+        refreshToken,
       });
     } catch (error) {
       next(error);
@@ -105,6 +106,7 @@ router.post(
 
       res.json({
         accessToken,
+        refreshToken,
       });
     } catch (error) {
       next(error);
@@ -168,6 +170,7 @@ router.post(
 
       res.json({
         accessToken,
+        refreshToken: newRefreshToken,
       });
     } catch (error) {
       next(error);
