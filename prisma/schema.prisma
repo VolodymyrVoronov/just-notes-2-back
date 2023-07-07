@@ -30,7 +30,7 @@ model RefreshToken {
 }
 
 model Note {
-  id        Int      @id @default(autoincrement())
+  id        Int      @id @unique @default(autoincrement())
   note      String
   color     String
   favorite  Boolean  @default(false)
