@@ -1,6 +1,12 @@
 import express, { NextFunction, Request, Response } from "express";
 
-import { findAllNotes, createNote } from "./notes.services";
+import {
+  findAllNotes,
+  createNote,
+  deleteNote,
+  addToFavorite,
+  updateNote,
+} from "./notes.services";
 
 const router = express.Router();
 
@@ -11,7 +17,7 @@ router.get("/all", async (req: Request, res: Response, next: NextFunction) => {
     const notes = await findAllNotes(userId);
 
     if (notes) {
-      res.json(notes);
+      res.json(notes.reverse());
     } else {
       res.json({
         message: "No notes found",
@@ -44,9 +50,17 @@ router.post(
 );
 
 router.patch(
-  "/update",
+  "/update/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const { id } = req.params;
+      const { note } = req.body;
+
+      await updateNote(id, note);
+
+      res.json({
+        status: 200,
+      });
     } catch (error) {
       next(error);
     }
@@ -54,9 +68,17 @@ router.patch(
 );
 
 router.patch(
-  "/favorite",
+  "/favorite/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const { favorite } = req.body;
+      const noteId = req.params.id;
+
+      await addToFavorite(noteId, favorite);
+
+      res.json({
+        status: 200,
+      });
     } catch (error) {
       next(error);
     }
@@ -64,9 +86,16 @@ router.patch(
 );
 
 router.delete(
-  "/delete",
+  "/delete/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const noteId = req.params.id;
+
+      await deleteNote(noteId);
+
+      res.json({
+        status: 200,
+      });
     } catch (error) {
       next(error);
     }
